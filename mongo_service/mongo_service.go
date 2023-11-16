@@ -27,7 +27,6 @@ type Articles struct {
 	Link  string `bson:"link"`
 }
 
-const testConst string = ""
 
 // Read the host from the JSON file
 func MongoGetHostFromJson() string{
@@ -149,7 +148,7 @@ func DeleteOneArticleFromCollection(collectionDocument string, id string) {
 
 }
 
-func AddArticleFromCollection(collectionDocument string, id string, title string, link string) {
+func AddArticleFromCollection(collectionDocument string, title string, link string) {
 
 	var connectionHost = MongoGetHostFromJson()
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
@@ -165,13 +164,12 @@ func AddArticleFromCollection(collectionDocument string, id string, title string
 		}
 	}()
 
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		log.Fatal(err)
-	}
+	//objectId, err := primitive.ObjectIDFromHex(id)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
 	filter := bson.D{
-		{"_id", objectId},
 		{"title", title},
 		{"link", link},
 	}

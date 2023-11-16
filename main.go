@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"log"
+
 	// "context"
 	// "fmt"
 	// "log"
@@ -41,12 +43,14 @@ func deleteOneArticle(c *gin.Context) {
 
 
 func addArticle(c *gin.Context) {
-	id := c.Param("id")[1:]
-	title := c.Param("id")[1:]
-	link := c.Param("id")[1:]
+	title := c.Param("title")
+	link := c.Param("link")
 
-	mongo_service.AddArticleFromCollection("medical_articles", id, title, link)
-	c.IndentedJSON(http.StatusOK, "Data Deleted")
+	log.Println(title)
+	log.Println(link)
+
+	//mongo_service.AddArticleFromCollection("medical_articles", title, link)
+	c.IndentedJSON(http.StatusOK, "Data Added")
 }
 
 
@@ -56,7 +60,7 @@ func main() {
 	router.GET("/getAllArticles", getAllArticles)
 	router.GET("/getOneArticle:id", getOneArticle)
 	router.GET("/deleteOneArticle:id", deleteOneArticle)
-	router.GET("/addArticle:id", addArticle)
+	router.GET("/addArticle/:title/:link", addArticle)
 	router.Run("localhost:8080")
 
 }
