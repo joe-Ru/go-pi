@@ -1,12 +1,10 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
 
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	// "context"
 	// "fmt"
 	// "log"
@@ -39,46 +37,60 @@ func getAllArticles(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func getOneArticle(c *gin.Context) {
-	id := c.Param("id")[1:]
-	oneArticle := mongo_service.GetOneArticleFromCollection("medical_articles", id)
-	c.IndentedJSON(http.StatusOK, oneArticle)
+func getOneArticle(w http.ResponseWriter, r *http.Request) {
+	idParam := chi.URLParam(r, "id")
+	oneArticle := mongo_service.GetOneArticleFromCollection("medical_articles", idParam)
+
+	log.Println(oneArticle)
+
+	jsonData, err := json.Marshal(oneArticle)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Error marshaling JSON: " + err.Error()))
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
 }
 
 
-func deleteOneArticle(c *gin.Context) {
-	id := c.Param("id")[1:]
-	mongo_service.DeleteOneArticleFromCollection("medical_articles", id)
-	c.IndentedJSON(http.StatusOK, "Data Deleted")
+func deleteOneArticle(w http.ResponseWriter, r *http.Request) {
+	idParam := chi.URLParam(r, "id")
+	mongo_service.DeleteOneArticleFromCollection("medical_articles", idParam)
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Item deleted successfully"))
+
 }
 
 
-func addArticle(c *gin.Context) {
-	title := c.Param("title")
-	link := c.Param("link")
+func addArticle(w http.ResponseWriter, r *http.Request) {
 
-	log.Println(title)
-	log.Println(link)
+	var newArticle Articles
 
-	//mongo_service.AddArticleFromCollection("medical_articles", title, link)
-	c.IndentedJSON(http.StatusOK, "Data Added")
+	if err := json.NewDecoder(r.Body).Decode(&newArticle); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error decoding JSON: " + err.Error()))
+		return
+	}
+
+	log.Println(newArticle)
+
+	mongo_service.AddArticleFromCollection("medical_articles", newArticle.Title, newArticle.Link)
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Item added successfully"))
 }
 
 
 
 func main() {
-	//router := gin.Default()
-	//router.GET("/getAllArticles", getAllArticles)
-	//router.GET("/getOneArticle:id", getOneArticle)
-	//router.GET("/deleteOneArticle:id", deleteOneArticle)
-	//router.GET("/addArticle/:title/:link", addArticle)
 
 	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
-
 	r.Get("/getAllArticles", getAllArticles)
+	r.Get("/getOneArticle/{id}", getOneArticle)
+	r.Post("/addOneArticle", addArticle)
+	r.Get("/deleteOneArticle/{id}", deleteOneArticle)
 
 
 	err := http.ListenAndServe(":8080", r)
