@@ -2,12 +2,11 @@ package mongo_service
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"os"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	//"fmt"
-	"io/ioutil"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -31,20 +30,9 @@ type Articles struct {
 // Read the host from the JSON file
 func MongoGetHostFromJson() string{
 
-	readContent, err := ioutil.ReadFile("./mongo_vars.json")
-
-	if err != nil {
-		log.Fatal("Error opening file: ", err)
-	}
-	var mongoVars MongoVars
-
-	err = json.Unmarshal(readContent, &mongoVars)
-	if err != nil {
-		log.Fatal("Error during Unmarshal(): ", err)
-	}
-
-	var mongoHost = mongoVars.Host
-	return mongoHost
+	mongodbURI := os.Getenv("MONGODB_URI")
+	log.Println(mongodbURI)
+	return mongodbURI
 
 }
 
@@ -58,17 +46,16 @@ func GetArticlesFromCollection(collectionDocument string)  []Articles {
 
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-
-	defer func() {
-		if err = client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
 
 	coll := client.Database("local").Collection(collectionDocument)
 	cursor, err := coll.Find(context.TODO(), bson.M{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer cursor.Close(context.Background())
 
 	var articles []Articles
 	var article Articles

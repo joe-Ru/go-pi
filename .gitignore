@@ -23,6 +23,3 @@ go.work
 
 # tmp for air
 tmp/
-
-#mongo constant variables
-mongo_vars.json

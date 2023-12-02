@@ -9,7 +9,7 @@ import (
 	// "fmt"
 	// "log"
 	//"encoding/json"
-	"mongo_connection_test/mongo_service"
+	"go_pi/mongo_service"
 	"net/http"
 	// "go.mongodb.org/mongo-driver/mongo"
 	// "go.mongodb.org/mongo-driver/mongo/options"
@@ -29,7 +29,6 @@ func getAllArticles(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Error marshaling JSON: " + err.Error()))
-		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
