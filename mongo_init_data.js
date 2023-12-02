@@ -1,5 +1,3 @@
-
-
 db = db.getSiblingDB('local')
 db.createCollection('medical_articles')
 

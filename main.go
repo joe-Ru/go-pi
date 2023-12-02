@@ -11,6 +11,7 @@ import (
 	//"encoding/json"
 	"go_pi/mongo_service"
 	"net/http"
+	"io/ioutil"
 	// "go.mongodb.org/mongo-driver/mongo"
 	// "go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -81,11 +82,25 @@ func addArticle(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Item added successfully"))
 }
 
+func schemaDoc(w http.ResponseWriter, r *http.Request) {
+
+		fileContent, err := ioutil.ReadFile("schema.json")
+		if err != nil {
+			http.Error(w, "Error reading JSON file", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(fileContent)
+}
+
 
 
 func main() {
 
 	r := chi.NewRouter()
+	r.Get("/", schemaDoc)
 	r.Get("/getAllArticles", getAllArticles)
 	r.Get("/getOneArticle/{id}", getOneArticle)
 	r.Post("/addOneArticle", addArticle)

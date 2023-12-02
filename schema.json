@@ -1,0 +1,32 @@
+[
+    {
+
+        "path": "/getAllArticles",
+        "method": "GET"
+    },
+    {
+
+        "path": "/getOneArticle/{id}",
+        "method": "GET",
+        "variables": {
+            "id": "string"
+        }
+    },
+    {
+
+        "path": "/addOneArticle",
+        "method": "POST",
+        "variables": {
+            "Title": "string",
+            "Link": "string"
+        }
+    },
+    {
+
+        "path": "/deleteOneArticle/{id}",
+        "method": "GET",
+        "variables": {
+            "id": "string"
+        }
+    }
+]
