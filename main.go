@@ -5,15 +5,9 @@ import (
 
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
-	// "context"
-	// "fmt"
-	// "log"
-	//"encoding/json"
 	"go_pi/mongo_service"
-	"net/http"
 	"io/ioutil"
-	// "go.mongodb.org/mongo-driver/mongo"
-	// "go.mongodb.org/mongo-driver/mongo/options"
+	"net/http"
 )
 
 type Articles struct {
@@ -39,7 +33,8 @@ func getAllArticles(w http.ResponseWriter, r *http.Request) {
 
 func getOneArticle(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
-	oneArticle := mongo_service.GetOneArticleFromCollection("medical_articles", idParam)
+	titleParam := chi.URLParam(r, "title")
+	oneArticle := mongo_service.GetOneArticleFromCollection("medical_articles", idParam, titleParam)
 
 	log.Println(oneArticle)
 
@@ -102,7 +97,7 @@ func main() {
 	r := chi.NewRouter()
 	r.Get("/", schemaDoc)
 	r.Get("/getAllArticles", getAllArticles)
-	r.Get("/getOneArticle/{id}", getOneArticle)
+	r.Get("/getOneArticle/{id}/{title}", getOneArticle)
 	r.Post("/addOneArticle", addArticle)
 	r.Get("/deleteOneArticle/{id}", deleteOneArticle)
 

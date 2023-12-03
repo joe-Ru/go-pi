@@ -3,10 +3,8 @@ package mongo_service
 import (
 	"context"
 	"fmt"
-	"os"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-
-	//"fmt"
+	"os"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -69,7 +67,7 @@ func GetArticlesFromCollection(collectionDocument string)  []Articles {
 	return articles
 }
 
-func GetOneArticleFromCollection(collectionDocument string, id string)  Articles {
+func GetOneArticleFromCollection(collectionDocument string, id string, title string)  Articles {
 
 	var connectionHost = MongoGetHostFromJson()
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
