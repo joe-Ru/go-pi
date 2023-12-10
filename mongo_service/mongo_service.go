@@ -3,10 +3,9 @@ package mongo_service
 import (
 	"context"
 	"fmt"
-	"log"
-	"os"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"os"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,17 +15,18 @@ import (
 type MongoVars struct {
 	UserName string
 	Database string
-	Host     string
+	Host string
 }
 
 type Articles struct {
 	ID    primitive.ObjectID `bson:"_id"`
-	Title string             `bson:"title"`
-	Link  string             `bson:"link"`
+	Title string `bson:"title"`
+	Link  string `bson:"link"`
 }
 
+
 // Read the host from the JSON file
-func MongoGetHostFromJson() string {
+func MongoGetHostFromJson() string{
 
 	mongodbURI := os.Getenv("MONGODB_URI")
 	log.Println(mongodbURI)
@@ -34,7 +34,7 @@ func MongoGetHostFromJson() string {
 
 }
 
-func GetArticlesFromCollection(collectionDocument string) []Articles {
+func GetArticlesFromCollection(collectionDocument string)  []Articles {
 
 	log.Println("collection document passed:", collectionDocument)
 
@@ -67,7 +67,7 @@ func GetArticlesFromCollection(collectionDocument string) []Articles {
 	return articles
 }
 
-func GetOneArticleFromCollection(collectionDocument string, id string) Articles {
+func GetOneArticleFromCollection(collectionDocument string, id string, title string)  Articles {
 
 	var connectionHost = MongoGetHostFromJson()
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
@@ -82,6 +82,7 @@ func GetOneArticleFromCollection(collectionDocument string, id string) Articles 
 			panic(err)
 		}
 	}()
+
 
 	var article Articles
 
