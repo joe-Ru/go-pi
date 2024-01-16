@@ -18,9 +18,11 @@ import (
 
 func GetAllArticlesTest(t *testing.T) {
 	req := httptest.NewRequest("GET", "/getAllArticles", nil)
-	rec := httptest.NewRecorder()
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "Hello, World!", rec.Body.String())
+	assert.Equal(t, http.StatusOK, req.Code)
+	assert.Equal(t, "Hello, World!", req.Body.String())
 
 }
